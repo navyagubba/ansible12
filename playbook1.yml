@@ -1,0 +1,13 @@
+---
+  - name: create a user
+    hosts: appserver
+    tasks:
+      - name: user creation
+        user:
+          name: ravi
+          password: intelliqit
+          uid: 3333
+          shell: /bin/bash
+          comment: "regular user"
+          home: /tmp/ravi
+
