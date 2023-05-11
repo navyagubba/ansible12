@@ -1,0 +1,39 @@
+---
+  - name: configure apache2 on ubuntu and httpd on rhel servers
+    hosts: all
+    tasks:
+      - name: install apache2 on ubuntu servers
+        apt:
+          name: apache2
+          state: present
+          update_cache: yes
+        when: ansible_distribution == "ubuntu"
+      - name: install httpd on rhel servers
+        yum:
+          name: httpd
+          state: present
+          update_cache: yes
+        when: ansible_distribution == "RedHat"
+      - name: edit the index.html file
+        copy: 
+          content: "wellcome to intelliqit hyd"
+          dest: /var/www/html/index.html
+      - name: restart apache2 on ubuntu servers
+        service: 
+          name: apache2
+          state: restarted
+        when: ansible_distribution == "ubuntu"
+      - name: restart httpd on rhel servers
+        service: 
+          name: httpd
+          state: restarted
+        when: ansible_distribution == "RedHat"
+      - name: check apache/httpd response on all managed nodes
+        uri:
+          url: "{{item}}"
+          status_code: 200
+        with_items:
+          - http://172.31.81.198
+          - http://172.31.86.149
+          - http://172.31.86.139
+
